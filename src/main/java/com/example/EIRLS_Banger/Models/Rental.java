@@ -26,8 +26,10 @@ public class Rental {
     private String pickupTime;
     private String rentalType;//(hours/days)
     private String rentalDuration;
-    private Date ReturnDueDate;
-    private String ReturnDueTime;
+    private Date returnDueDate;
+    private String returnDueTime;
+    private String rentalStatus;
+    private String rentalCost;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "user", referencedColumnName = "userId")

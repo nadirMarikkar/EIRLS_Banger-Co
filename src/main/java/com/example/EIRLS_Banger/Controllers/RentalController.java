@@ -65,5 +65,41 @@ public class RentalController {
 //        rentalService.deleteById(rentalId);
 //    }
 
+    //UPDATE STATUSES -------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+    // ACCEPTED RENTAL
+
+    @PreAuthorize("hasRole('ADMIIN')")
+    @PutMapping("/updateRentalStatus/updateAcceptedStatus")
+    public ResponseEntity<?> updateAcceptedStatus (@RequestBody Integer updateAcceptedStatus){
+        return rentalService.updateAcceptedStatus(updateAcceptedStatus);
+    }
+
+
+    //REJECTED RENTAL
+
+    @PreAuthorize("hasRole('ADMIIN')")
+    @PutMapping("/updateRentalStatus/updateRejectedStatus")
+    public ResponseEntity<?> updateRejectedStatus (@RequestBody Integer updateRejectedStatus){
+        return rentalService.updateRejectedStatus(updateRejectedStatus);
+    }
+
+    //COLLECTED VEHICLE
+
+    @PreAuthorize("hasRole('ADMIIN')")
+    @PutMapping("/updateRentalStatus/updateCollectedStatus")
+    public ResponseEntity<?> updateCollectedStatus (@RequestBody Integer updateCollectedStatus){
+        return rentalService.updateCollectedStatus(updateCollectedStatus);
+    }
+
+
+    //RETURNED VEHICLE
+
+    @PreAuthorize("hasRole('ADMIIN')")
+    @PutMapping("/updateRentalStatus/updateReturnedStatus")
+    public ResponseEntity<?> updateReturnedStatus (@RequestBody Integer updateReturnedStatus){
+        return rentalService.updateReturnedStatus(updateReturnedStatus);
+    }
+
+
 
 }

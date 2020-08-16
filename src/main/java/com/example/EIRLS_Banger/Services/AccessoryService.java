@@ -32,6 +32,7 @@ public class AccessoryService {
             accessory.setAccessoryDescription(newAccessory.getAccessoryDescription());
             accessory.setQuantity(newAccessory.getQuantity());
             accessory.setAvailability(newAccessory.getAvailability());
+            accessory.setRentingCost(newAccessory.getRentingCost());
             //save
             accessoryRepository.save(accessory);
         }
@@ -82,6 +83,7 @@ public class AccessoryService {
             accessory.setAccessoryDescription(updateAccessory.getAccessoryDescription());
             accessory.setQuantity(updateAccessory.getQuantity());
             accessory.setAvailability(updateAccessory.getAvailability());
+            accessory.setRentingCost(updateAccessory.getRentingCost());
             //save
             accessoryRepository.save(accessory);
             return ResponseEntity.ok().body(new MessageResponse("Successfully updated"));

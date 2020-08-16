@@ -22,6 +22,7 @@ public class Accessory {
     private String accessoryDescription;
     private int quantity;
     private String availability;
+    private String rentingCost;
 
 
 

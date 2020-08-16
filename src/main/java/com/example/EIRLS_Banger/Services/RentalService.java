@@ -2,19 +2,24 @@ package com.example.EIRLS_Banger.Services;
 
 
 import com.example.EIRLS_Banger.Models.Rental;
+import com.example.EIRLS_Banger.Models.User;
+import com.example.EIRLS_Banger.Models.Vehicle;
 import com.example.EIRLS_Banger.Repositories.RentalRepository;
+import com.example.EIRLS_Banger.Repositories.UserRepository;
+import com.example.EIRLS_Banger.Repositories.VehicleRepository;
 import com.example.EIRLS_Banger.Response.MessageResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 
 @Service
 public class RentalService {
 
     private RentalRepository rentalRepository;
+    private UserRepository userRepository;
+    private VehicleRepository vehicleRepository;
 
     @Autowired
     public RentalService(RentalRepository rentalRepository) {
@@ -30,32 +35,47 @@ public class RentalService {
         //conditions u sh0ould check before saving a rent
         //check if the vehicle that user ask is available for renting
         //check if the equipment is available for that renting perdio
-        //check if the time renting is not less than 5 hrs
 
-    //u dont check whether a rental is vailable by rental id
+
+        //u dont check whether a rental is vailable by rental id
 //        when checcking a rental u should check if the reant table have that particular vehicle id
-        if (rentalRepository.existsByVehicle(newRent.getVehicle())){
+        if (rentalRepository.existsByVehicle(newRent.getVehicle())) {
 //                (newRent.getVehicle())){
-            return ResponseEntity.badRequest().body(new MessageResponse("cant rent"));
-        } else
+            return ResponseEntity.badRequest().body(new MessageResponse("Cannot rent"));
+        } else {
+           // if (userRepository.existsByUsername(newRent.getUser().getUsername())) {
 
-    {
-        Rental rental = new Rental();
+                if (!userRepository.existsByStatus(newRent.getUser())) //if user is not blaklist
+            //        if(!vehicleRepository.existsById(newRent.getVehicle().getVehicleId()))
+                {
+                    Rental rental = new Rental();
 
 
-        rental.setPickupDate(newRent.getPickupDate());
-        rental.setPickupTime(newRent.getPickupTime());
-        rental.setRentalType(newRent.getRentalType());
-        rental.setRentalDuration(newRent.getRentalDuration());
-        rental.setReturnDueDate(newRent.getReturnDueDate());
-        rental.setReturnDueTime(newRent.getReturnDueTime());
-        rentalRepository.save(rental);
+                    rental.setPickupDate(newRent.getPickupDate());
+                    rental.setPickupTime(newRent.getPickupTime());
+                    rental.setRentalType(newRent.getRentalType());
+                    rental.setRentalDuration(newRent.getRentalDuration());
+                    rental.setReturnDueDate(newRent.getReturnDueDate());
+                    rental.setReturnDueTime(newRent.getReturnDueTime());
+                   // rental.setRentalStatus(newRent.getRentalStatus());
+                    rental.setRentalCost(newRent.getRentalCost());
 
-        return ResponseEntity.ok().body(new MessageResponse("Successfully Rented"));
 
-    }
+                    rentalRepository.save(rental);
+
+                    return ResponseEntity.ok().body(new MessageResponse("Successfully Rented"));
+                } else {
+                    return ResponseEntity.badRequest().body(new MessageResponse("Cannot Rent. You are BLACKLISTED"));
+                }
+
+
+            }
+
+        }
 //
-}
+
+
+
 
 
 
@@ -94,6 +114,9 @@ public class RentalService {
             rental.setRentalDuration(updateRental.getRentalDuration());
             rental.setReturnDueDate(updateRental.getReturnDueDate());
             rental.setReturnDueTime(updateRental.getReturnDueTime());
+            rental.setRentalStatus("pending");
+            rental.setRentalCost(updateRental.getRentalCost());
+
             rentalRepository.save(rental);
             return ResponseEntity.ok().body(new MessageResponse("Successfully updated"));
 
@@ -109,4 +132,68 @@ public class RentalService {
 //      rentalRepository.deleteById(rentalId);
 //   }
 
+    //UPDATE STATUSES-------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
+
+    // ACCEPTED RENTAL
+
+    public ResponseEntity<?> updateAcceptedStatus (Integer rentalId){
+        Rental rental= rentalRepository.findById(rentalId).get();
+
+        rental.setRentalStatus("accepted");
+        rentalRepository.save(rental);
+        return ResponseEntity.ok().body(new MessageResponse("Successfully status updated"));
+    }
+
+
+    //REJECTED RENTAL
+
+    public ResponseEntity<?> updateRejectedStatus (Integer rentalId){
+        Rental rental= rentalRepository.findById(rentalId).get();
+
+        rental.setRentalStatus("rejected");
+        rentalRepository.save(rental);
+        return ResponseEntity.ok().body(new MessageResponse("Successfully status updated"));
+    }
+
+    //COLLECTED VEHICLE
+
+    public ResponseEntity<?> updateCollectedStatus (Integer rentalId){
+        Rental rental= rentalRepository.findById(rentalId).get();
+
+
+        if (
+                rental.getRentalStatus()== ("accepted")) {
+
+            rental.setRentalStatus("collected");
+            rentalRepository.save(rental);
+            return ResponseEntity.ok().body(new MessageResponse("Successfully status updated"));
+        }
+        else {
+            return ResponseEntity.ok().body(new MessageResponse("Rental is not accepted"));
+
+        }
+    }
+
+    //RETURNED VEHICLE
+
+    public ResponseEntity<?> updateReturnedStatus (Integer rentalId){
+        Rental rental= rentalRepository.findById(rentalId).get();
+
+
+        if (
+                rental.getRentalStatus()== ("collected")) {
+
+            rental.setRentalStatus("returned");
+            rentalRepository.save(rental);
+            return ResponseEntity.ok().body(new MessageResponse("Successfully status updated"));
+        }
+        else {
+            return ResponseEntity.ok().body(new MessageResponse("Vehicle was not collected"));
+
+        }
+    }
+
+
+    //EXTENDED RENTAL
 }

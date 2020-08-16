@@ -14,6 +14,7 @@ public interface RentalRepository extends JpaRepository<Rental, Integer> {
 
     boolean existsByVehicle(Vehicle vehicle);
 //    boolean existsByUserDrivingLicence(String licwen);
-    //did u get. what you said? yep answer the call
+
+
 
 }
